@@ -1,7 +1,7 @@
 import { normalize } from 'path'
 import { promises as fsp } from 'fs'
 import cac from 'cac'
-import { build, BuildOptions } from 'nereid'
+import { build, BuildOptions } from './build'
 import { exists, publish } from './publish'
 
 const cli = cac()

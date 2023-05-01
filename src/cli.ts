@@ -55,3 +55,7 @@ cli.command('publish-npm <org>', '发布到 npm')
 
 cli.help()
 cli.parse()
+
+if (!cli.matchedCommand) {
+  cli.outputHelp()
+}

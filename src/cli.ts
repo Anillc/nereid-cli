@@ -1,9 +1,9 @@
 import { normalize } from 'path'
 import { promises as fsp } from 'fs'
-import cac from 'cac'
+import { cac } from 'cac'
 import { sync } from 'nereid'
 import { build, BuildOptions } from './build'
-import { exists, publish } from './publish'
+import { fetchVersions, publish } from './publish'
 
 const cli = cac()
 
@@ -27,10 +27,10 @@ cli.command('build <path>', '构建 nereid store')
     await build(path, `${process.cwd()}/nereid`, options)
   })
 
-cli.command('publish-npm <org>', '发布到 npm')
+cli.command('publish-npm <package>', '发布到 npm')
   .alias('pub')
   .option('--token <token>', 'npm token')
-  .action(async (org: string, { token }) => {
+  .action(async (pkg: string, { token }) => {
     if (!token) {
       token = process.env.NPM_TOKEN
     }
@@ -41,15 +41,29 @@ cli.command('publish-npm <org>', '发布到 npm')
     const index = `${process.cwd()}/nereid/nereid.json`
     await fsp.access(index)
     const dir = await fsp.readdir(store)
+    const versions = await fetchVersions(pkg)
+    versions.reverse()
+    let indexVersion: string
+    for (const version of versions) {
+      const match = version.match(/^0\.0\.0-latest-(\d+)$/)
+      if (!match) continue
+      indexVersion = `0.0.0-latest-${+match[1] + 1}`
+      break
+    }
+    indexVersion ||= `0.0.0-latest-1`
     for (const file of dir) {
-      if (await exists(`@${org}/${file}`)) continue
+      const name = `0.0.0-${file}`
+      if (versions.includes(name)) continue
       const data = await fsp.readFile(`${store}/${file}`)
-      await publish(`@${org}/${file}`, [{
+      await publish(pkg, name, [{
         path: file, data,
-      }], { forceAuth: { token } })
+      }], {
+        defaultTag: 'store',
+        forceAuth: { token },
+      })
       console.log(`${file} published`)
     }
-    await publish(`@${org}/nereid.json`, [{
+    await publish(pkg, indexVersion, [{
       path: 'nereid.json', data: await fsp.readFile(index)
     }], { forceAuth: { token } })
   })

@@ -1,11 +1,12 @@
 {
   "name": "nereid-cli",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "main": "lib/index.js",
   "repository": "https://github.com/Anillc/nereid-cli.git",
   "author": "Anillc <void@anillc.cn>",
   "files": [
-    "lib"
+    "lib",
+    "cli.js"
   ],
   "bin": {
     "nereid-cli": "./cli.js"

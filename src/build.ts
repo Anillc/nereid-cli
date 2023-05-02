@@ -18,7 +18,7 @@ export async function build(src: string, dst: string, options?: BuildOptions) {
     bucket: basename(src),
     ...options,
   }
-  const path = `${dst}${options.index}`
+  const path = `${dst}/${options.index}`
   let index: Nereid.Index
   if (await exists(path)) {
     index = JSON.parse(await fsp.readFile(path, 'utf-8'))
@@ -42,7 +42,7 @@ export async function build(src: string, dst: string, options?: BuildOptions) {
   index.buckets[options.bucket] = tree
   index.composables = [...map.values()]
 
-  await fsp.writeFile(`${dst}${options.index}`, JSON.stringify(index), 'utf-8')
+  await fsp.writeFile(`${dst}/${options.index}`, JSON.stringify(index), 'utf-8')
 }
 
 async function buildTree(

@@ -1,6 +1,6 @@
 {
   "name": "nereid-cli",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "lib/index.js",
   "repository": "https://github.com/Anillc/nereid-cli.git",
   "author": "Anillc <void@anillc.cn>",
@@ -18,7 +18,7 @@
     "archiver": "^5.3.1",
     "cac": "^6.7.14",
     "libnpmpublish": "^7.1.3",
-    "nereid": "^0.0.3",
+    "nereid": "^0.0.5",
     "npm-registry-fetch": "^14.0.4"
   },
   "devDependencies": {

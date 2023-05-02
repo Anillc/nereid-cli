@@ -1,6 +1,7 @@
 import { normalize } from 'path'
 import { promises as fsp } from 'fs'
 import cac from 'cac'
+import { sync } from 'nereid'
 import { build, BuildOptions } from './build'
 import { exists, publish } from './publish'
 
@@ -51,6 +52,23 @@ cli.command('publish-npm <org>', '发布到 npm')
     await publish(`@${org}/nereid.json`, [{
       path: 'nereid.json', data: await fsp.readFile(index)
     }], { forceAuth: { token } })
+  })
+
+cli.command('download <bucket> [...sources]', '下载')
+  .alias('d')
+  .option('--output <path>', '输出文件夹', { default: './nereid' })
+  .action((bucket: string, sources: string[], options) => {
+    const state = sync(sources, bucket, { output: options.output })
+    state.on('download/composable/done', (composable) => {
+      console.log(`${composable.hash} downloaded`)
+    })
+    state.on('failed', (error) => {
+      console.error(error)
+      console.log('failed to download')
+    })
+    state.on('done', (path) => {
+      console.log(`downloaded in ${path}`)
+    })
   })
 
 cli.help()

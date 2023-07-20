@@ -1,6 +1,9 @@
 import { promises as fsp, Stats } from 'fs'
 import { basename, resolve } from 'path'
 import { Nereid, exists, hashFile, hashText } from 'nereid'
+import { platform } from 'os'
+
+const windows = platform() === 'win32'
 
 export interface BuildOptions {
   hashMode?: 'nix'
@@ -59,7 +62,7 @@ async function buildTree(
     return {
       name, hash,
       size: stat.size,
-      perm: stat.mode,
+      perm: windows ? 0o755 : stat.mode,
       type: 'file',
       composables,
     }

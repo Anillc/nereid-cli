@@ -74,14 +74,14 @@ cli.command('download <bucket> [...sources]', '下载')
   .action((bucket: string, sources: string[], options) => {
     const state = sync(sources, bucket, { output: options.output })
     state.on('download/composable/done', (composable) => {
-      console.log(`${composable.hash} downloaded`)
+      console.error(`${composable.hash} downloaded`)
     })
     state.on('failed', (error) => {
       console.error(error)
-      console.log('failed to download')
+      console.error('failed to download')
     })
     state.on('done', (path) => {
-      console.log(`downloaded in ${path}`)
+      console.log(path)
     })
   })
 

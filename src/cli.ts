@@ -1,7 +1,7 @@
 import { normalize } from 'path'
 import { promises as fsp } from 'fs'
 import { cac } from 'cac'
-import { sync } from 'nereid'
+import { fetchIndex, sync } from 'nereid'
 import { build, BuildOptions } from './build'
 import { fetchVersions, publish } from './publish'
 
@@ -66,6 +66,15 @@ cli.command('publish-npm <package>', '发布到 npm')
     await publish(pkg, indexVersion, [{
       path: 'nereid.json', data: await fsp.readFile(index)
     }], { forceAuth: { token } })
+  })
+
+cli.command('fetch-index <source>', '获取索引文件')
+  .option('--output <path>', '输出文件夹', { default: './nereid' })
+  .option('--index <name>', '索引文件名', { default: 'nereid.json' })
+  .action(async (source: string, options) => {
+    const index = await fetchIndex(source, { index: options.index })
+    await fsp.mkdir(options.output, { recursive: true })
+    await fsp.writeFile(`${options.output}/${options.index}`, JSON.stringify(index))
   })
 
 cli.command('download <bucket> [...sources]', '下载')

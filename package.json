@@ -1,6 +1,6 @@
 {
   "name": "nereid-cli",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "main": "lib/index.js",
   "repository": "https://github.com/Anillc/nereid-cli.git",
   "author": "Anillc <void@anillc.cn>",
